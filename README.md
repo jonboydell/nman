@@ -1,12 +1,12 @@
-Node Version Manager for *NIX systems
+Lightweight NodeJS Version Manager for *NIX systems
 --
 
-Currently only tested on OSX.
+To use:
+`curl -O https://raw.githubusercontent.com/jonboydell/nman/master/node-manager.sh; source node-manager.sh;`
 
-To use - source node-manager.sh
-
-Switching versions - nman-switch v<VERSION_NUMBER>
-Listing available versions - nman-list
-Listing installed versions - nman-installed
-Remove installed version - nman-remove v<VERSION_NUMBER>
+Commands:
+nman-switch <VERSION_NUMBER> - Switches to a new version of NodeJS (Downloads and installs it, if necessary
+nman-remove <VERSION_NUMBER> - Permanently removes an installed version of NodeJS
+nman-list - List of all available versions
+nman-installed - List of all installed versions
 
