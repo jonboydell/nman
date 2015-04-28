@@ -1,9 +1,6 @@
 Lightweight NodeJS Version Manager for UNIX systems
 --
 
-Problems:
-* Currently only works on OSX systems with wget installed (annoying)
-
 To use:
 
 `curl -O https://raw.githubusercontent.com/jonboydell/nman/master/node-manager.sh; source node-manager.sh;`
