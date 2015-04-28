@@ -1,5 +1,7 @@
 export NMAN_HOME="${HOME}/.nman";
 NMAN_DOWNLOAD_BASE=https://nodejs.org/dist
+OS=`uname`
+NMAN_DOWNLOADER=wget
 
 function __nman-downloadAndUntar {
   NODE_VERSION=${1}
@@ -13,7 +15,19 @@ function __nman-downloadAndUntar {
   NODE_DOWNLOAD_TARBALL_TARGET="${NODE_VERSION_SRC}/${NODE_DOWNLOAD_TARBALL}"
 
   if [ ! -f "${NODE_DOWNLOAD_TARBALL_TARGET}" ];
-    then wget ${NODE_DOWNLOAD_URL} --output-document="${NODE_DOWNLOAD_TARBALL_TARGET}";
+    then
+    
+    if [ "wget" == ${NMAN_DOWNLOADER} ];
+      then wget ${NODE_DOWNLOAD_URL} --output-document="${NODE_DOWNLOAD_TARBALL_TARGET}";
+    fi
+
+    if [ "curl" == ${NMAN_DOWNLOADER} ];
+      then
+        pushd ${NODE_VERSION_SRC};
+        curl -O ${NODE_DOWNLOAD_URL};
+        popd;
+    fi
+
   fi
 
   pushd ${NODE_VERSION_SRC}
@@ -36,6 +50,10 @@ function __nman-build {
 }
 
 function __nman-setup {
+
+  command -v wget >/dev/null 2>&1 || { NMAN_DOWNLOADER=curl; }
+  echo ${NMAN_DOWNLOADER}
+
   if [ ! -d "${NMAN_HOME}" ];
     then mkdir ${NMAN_HOME};
   fi
@@ -102,6 +120,8 @@ function nman-remove {
 }
 
 function nman-list {
+  __nman-setup;
+
   VERSIONS=`ls "${NMAN_HOME}/node" | awk '{ print $1 }'`
 
   curl "${NMAN_DOWNLOAD_BASE}/" > out.txt
