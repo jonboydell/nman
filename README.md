@@ -1,6 +1,10 @@
 Lightweight NodeJS Version Manager for UNIX systems
 --
 
+Requires:
+
+One of `wget` or `curl`
+
 To use:
 
 `curl -O https://raw.githubusercontent.com/jonboydell/nman/master/node-manager.sh; source node-manager.sh;`
