@@ -16,6 +16,12 @@ function __nman-checkDependencies {
       echo "make not installed";
       CAN_CONTINUE="no";
   fi
+  
+  if [ ! `which g++` ];
+    then
+      echo "make not installed";
+      CAN_CONTINUE="no";
+  fi
 }
 
 function __nman-downloadAndUntar {
