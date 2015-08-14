@@ -1,4 +1,7 @@
-export NMAN_HOME="${HOME}/.nman";
+#!/bin/bash
+set -e
+
+export NMAN_HOME="${HOME}/.nman"
 NMAN_DOWNLOAD_BASE=https://nodejs.org/dist
 OS=`uname`
 NMAN_DOWNLOADER=wget
