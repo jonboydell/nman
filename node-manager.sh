@@ -19,7 +19,7 @@ function __nman-checkDependencies {
   
   if [ ! `which g++` ];
     then
-      echo "make not installed";
+      echo "g++ not installed";
       CAN_CONTINUE="no";
   fi
 }
@@ -205,8 +205,8 @@ function nman-install {
 
   if [ "yes" == ${CAN_CONTINUE} ];
     then
-      __nman-downloadAndUntar ${VERSION} ${VERSION_SRC}
-      __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME}
+      __nman-downloadAndUntar ${VERSION} ${VERSION_SRC};
+      __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME};
       nman-switch ${VERSION};
   fi;
 }
