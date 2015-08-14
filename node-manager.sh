@@ -41,12 +41,31 @@ function __nman-build {
   echo $BUILD_DIR
   echo $INSTALL_PREFIX
 
-  CPU_CORES=`sysctl -n hw.ncpu`
+  CPU_CORES=8
+  
+  if [ "Darwin" == ${OS} ];
+    then
+      CPU_CORES=`sysctl -n hw.ncpu`;
+  fi
+  
+  if [ ! `which gcc` ];
+    then
+      echo "gcc not installed";
+      exit 1;
+  fi
+  
+  if [ ! `which make` ];
+    then
+      echo "make not installed";
+      exit 1;
+  fi
+  
   pushd "${BUILD_DIR}"
   ./configure --prefix=${INSTALL_PREFIX}
   make -j ${CPU_CORES}
   make install
   popd
+  
 }
 
 function __nman-setup {
