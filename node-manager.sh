@@ -4,6 +4,20 @@ OS=`uname`
 NMAN_DOWNLOADER=wget
 CAN_CONTINUE="yes"
 
+function __nman-checkDependencies {
+  if [ ! `which gcc` ];
+    then
+      echo "gcc not installed";
+      CAN_CONTINUE="no";
+  fi
+  
+  if [ ! `which make` ];
+    then
+      echo "make not installed";
+      CAN_CONTINUE="no";
+  fi
+}
+
 function __nman-downloadAndUntar {
   NODE_VERSION=${1}
   NODE_VERSION_SRC=${2}
@@ -177,16 +191,16 @@ function nman-list {
 
 function nman-install {
   __nman-setup;
+  __nman-checkDependencies;
 
   VERSION=${1}
   VERSION_SRC="${NMAN_HOME}/src"
   VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
 
-  __nman-downloadAndUntar ${VERSION} ${VERSION_SRC}
-  __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME}
-
   if [ "yes" == ${CAN_CONTINUE} ];
     then
+      __nman-downloadAndUntar ${VERSION} ${VERSION_SRC}
+      __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME}
       nman-switch ${VERSION};
-  fi
+  fi;
 }
