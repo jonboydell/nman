@@ -1,5 +1,6 @@
 Lightweight NodeJS Version Manager for UNIX systems
 --
+Lets you quickly switch between node versions, list all existing version and remove ones that you don't want any more
 
 Requires:
 
