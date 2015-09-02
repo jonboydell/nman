@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 export NMAN_HOME="${HOME}/.nman"
 NMAN_DOWNLOAD_BASE=https://nodejs.org/dist
@@ -13,13 +12,13 @@ function __nman-checkDependencies {
       echo "gcc not installed";
       CAN_CONTINUE="no";
   fi
-  
+
   if [ ! `which make` ];
     then
       echo "make not installed";
       CAN_CONTINUE="no";
   fi
-  
+
   if [ ! `which g++` ];
     then
       echo "g++ not installed";
@@ -40,7 +39,7 @@ function __nman-downloadAndUntar {
 
   if [ ! -f "${NODE_DOWNLOAD_TARBALL_TARGET}" ];
     then
-    
+
     if [ "wget" == ${NMAN_DOWNLOADER} ];
       then wget ${NODE_DOWNLOAD_URL} --output-document="${NODE_DOWNLOAD_TARBALL_TARGET}";
     fi
@@ -66,32 +65,32 @@ function __nman-build {
   echo $INSTALL_PREFIX
 
   CPU_CORES=8
-  
+
   if [ "Darwin" == ${OS} ];
     then
       CPU_CORES=`sysctl -n hw.ncpu`;
   fi
-  
+
   if [ ! `which gcc` ];
     then
       echo "gcc not installed";
       CAN_CONTINUE="no";
   fi
-  
+
   if [ ! `which make` ];
     then
       echo "make not installed";
       CAN_CONTINUE="no";
   fi
-  
+
   if [ "yes" == ${CAN_CONTINUE} ];
-    then 
+    then
       pushd "${BUILD_DIR}";
       ./configure --prefix=${INSTALL_PREFIX};
       make -j ${CPU_CORES};
       make install;
       popd;
-  fi  
+  fi
 }
 
 function __nman-setup {
