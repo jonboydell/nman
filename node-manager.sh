@@ -96,7 +96,6 @@ function __nman-build {
 function __nman-setup {
 
   command -v wget >/dev/null 2>&1 || { NMAN_DOWNLOADER=curl; }
-  echo ${NMAN_DOWNLOADER}
 
   if [ ! -d "${NMAN_HOME}" ];
     then mkdir ${NMAN_HOME};
@@ -121,7 +120,7 @@ function nman-switch {
   else
     VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
 
-    echo "Switching to version ${VERSION} at ${VERSION_HOME}."
+    echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
 
     if [ -d "${VERSION_HOME}" ];
       then export PATH="${VERSION_HOME}/bin:$PATH";
@@ -143,6 +142,11 @@ function nman-installed {
       echo $i;
     fi
   done
+}
+
+function nman-switch-active {
+    ACTIVE=`cat "${NMAN_HOME}/active.txt"`
+    nman-switch ${ACTIVE}
 }
 
 function nman-remove {
