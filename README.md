@@ -4,7 +4,7 @@ Lets you quickly switch between node versions, list all existing version and rem
 
 Requires:
 
-One of `wget` or `curl`.  
+One of `wget` or `curl` (and the Perl module HTML::TreeBuilder if you want to use nman_list `cpan install HTML::TreeBuilder`).
 
 *If you are using OSX, and you want to use `wget` then your best bet is to install `brew` and then use that to install `wget`.  Mainly because building `wget` from source is a pain in the arse (as is building many useful tools on OSX).
 

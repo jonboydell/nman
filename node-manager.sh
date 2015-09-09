@@ -109,20 +109,20 @@ function __nman-setup {
 }
 
 function nman-switch {
+
   __nman-setup;
 
   if [[ ${1} == v* ]];
       then
           VERSION=${1}
-
-            VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
-            echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
-            if [ -d "${VERSION_HOME}" ];
+          VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
+          echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
+          if [ -d "${VERSION_HOME}" ];
               then export PATH="${VERSION_HOME}/bin:$PATH";
-            else
+          else
               echo "Version ${VERSION} doesn't seem to be installed.";
-              nman-install ${1};
-            fi
+              nman-install ${VERSION};
+          fi
           echo ${VERSION} > ${NMAN_HOME}/active.txt;
     else
         echo "Usage nman-switch vX.Y.Z";
@@ -130,6 +130,7 @@ function nman-switch {
 }
 
 function nman-installed {
+
   VERSIONS=`ls "${NMAN_HOME}/node" | awk '{ print $1 }'`
   ACTIVE=`cat "${NMAN_HOME}/active.txt"`
   for i in ${VERSIONS[@]}; do
@@ -142,11 +143,13 @@ function nman-installed {
 }
 
 function nman-switch-active {
+
     ACTIVE=`cat "${NMAN_HOME}/active.txt"`
     nman-switch ${ACTIVE}
 }
 
 function nman-remove {
+
   VERSION=${1}
 
   if [ ! -n ${VERSION} ];
@@ -165,6 +168,7 @@ function nman-remove {
 }
 
 function nman-list {
+    
   __nman-setup;
 
   VERSIONS=`ls "${NMAN_HOME}/node" | awk '{ print $1 }'`
