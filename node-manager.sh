@@ -6,6 +6,19 @@ OS=`uname`
 NMAN_DOWNLOADER=wget
 CAN_CONTINUE="yes"
 
+function __nman-getOSXDependencies {
+    if [ ! `which brew` ];
+        then
+            ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+    fi
+
+    brew install wget;
+}
+
+function __nman-getUbuntuDependencies {
+    sudo apt-get install gcc g++ make;
+}
+
 function __nman-checkDependencies {
   if [ ! `which gcc` ];
     then
@@ -71,26 +84,11 @@ function __nman-build {
       CPU_CORES=`sysctl -n hw.ncpu`;
   fi
 
-  if [ ! `which gcc` ];
-    then
-      echo "gcc not installed";
-      CAN_CONTINUE="no";
-  fi
-
-  if [ ! `which make` ];
-    then
-      echo "make not installed";
-      CAN_CONTINUE="no";
-  fi
-
-  if [ "yes" == ${CAN_CONTINUE} ];
-    then
-      pushd "${BUILD_DIR}";
-      ./configure --prefix=${INSTALL_PREFIX};
-      make -j ${CPU_CORES};
-      make install;
-      popd;
-  fi
+  pushd "${BUILD_DIR}";
+  ./configure --prefix=${INSTALL_PREFIX};
+  make -j ${CPU_CORES};
+  make install;
+  popd;
 }
 
 function __nman-setup {
@@ -113,23 +111,22 @@ function __nman-setup {
 function nman-switch {
   __nman-setup;
 
-  VERSION=${1}
+  if [[ ${1} == v* ]];
+      then
+          VERSION=${1}
 
-  if [ ! -n "${VERSION}" ];
-    then echo "No version number specified";
-  else
-    VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
-
-    echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
-
-    if [ -d "${VERSION_HOME}" ];
-      then export PATH="${VERSION_HOME}/bin:$PATH";
+            VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
+            echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
+            if [ -d "${VERSION_HOME}" ];
+              then export PATH="${VERSION_HOME}/bin:$PATH";
+            else
+              echo "Version ${VERSION} doesn't seem to be installed.";
+              nman-install ${1};
+            fi
+          echo ${VERSION} > ${NMAN_HOME}/active.txt;
     else
-      echo "Version ${VERSION} doesn't seem to be installed.";
-      nman-install ${1};
+        echo "Usage nman-switch vX.Y.Z";
     fi
-  fi
-  echo ${VERSION} > ${NMAN_HOME}/active.txt
 }
 
 function nman-installed {
