@@ -16,6 +16,7 @@ To add functions from `node-manager.sh` permanently:
 
 1. Copy the `node-manager.sh` file somewhere useful
 2. Add `source <path_to>/node-manager.sh` into your `.profile` (in your $HOME directory)
+2. Add `nman-switch-active` into your .profile too
 
 Commands:
 
