@@ -168,7 +168,7 @@ function nman-remove {
 }
 
 function nman-list {
-    
+
   __nman-setup;
 
   VERSIONS=`ls "${NMAN_HOME}/node" | awk '{ print $1 }'`
@@ -207,13 +207,23 @@ function nman-install {
   __nman-checkDependencies;
 
   VERSION=${1}
+  GLOBAL=${2}
   VERSION_SRC="${NMAN_HOME}/src"
   VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
+
+  if [ "global" == ${GLOBAL} ];
+    then
+        VERSION_HOME="/usr/local";
+  fi;
 
   if [ "yes" == ${CAN_CONTINUE} ];
     then
       __nman-downloadAndUntar ${VERSION} ${VERSION_SRC};
       __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME};
-      nman-switch ${VERSION};
+
+      if [ ! "global" == ${GLOBAL} ];
+        then
+            nman-switch ${VERSION};
+      fi;
   fi;
 }
