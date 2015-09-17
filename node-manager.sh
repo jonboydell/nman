@@ -115,13 +115,25 @@ function nman-switch {
   if [[ ${1} == v* ]];
       then
           VERSION=${1}
+          GLOBAL=${2}
+
           VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
-          echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
-          if [ -d "${VERSION_HOME}" ];
-              then export PATH="${VERSION_HOME}/bin:$PATH";
+          if [ "global" == ${GLOBAL} ];
+            then
+                VERSION_HOME="/usr/local";
+                if [ -f "${VERSION_HOME}/local/bin" ];
+                then
+                    echo "Node doesn't seem to be installed at ${VERSION_HOME}.";
+                    nman-install ${VERSION} ${GLOBAL};
+                fi;
           else
-              echo "Version ${VERSION} doesn't seem to be installed.";
-              nman-install ${VERSION};
+              echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
+              if [ -d "${VERSION_HOME}" ];
+                  then export PATH="${VERSION_HOME}/bin:$PATH";
+              else
+                  echo "Version ${VERSION} doesn't seem to be installed.";
+                  nman-install ${VERSION} ${GLOBAL};
+              fi
           fi
           echo ${VERSION} > ${NMAN_HOME}/active.txt;
     else
@@ -219,11 +231,7 @@ function nman-install {
   if [ "yes" == ${CAN_CONTINUE} ];
     then
       __nman-downloadAndUntar ${VERSION} ${VERSION_SRC};
-      __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME};
-
-      if [ ! "global" == ${GLOBAL} ];
-        then
-            nman-switch ${VERSION};
-      fi;
+      __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME} ${GLOBAL};
+      nman-switch ${VERSION} ${GLOBAL};
   fi;
 }
