@@ -87,7 +87,12 @@ function __nman-build {
   pushd "${BUILD_DIR}";
   ./configure --prefix=${INSTALL_PREFIX};
   make -j ${CPU_CORES};
-  make install;
+  if [ "/usr/local" == ${INSTALL_PREFIX} ];
+      then
+        sudo make install;
+  else
+      make install;
+  fi
   popd;
 }
 
@@ -121,7 +126,7 @@ function nman-switch {
           if [ "global" == ${GLOBAL} ];
             then
                 VERSION_HOME="/usr/local";
-                if [ -f "${VERSION_HOME}/local/bin" ];
+                if [ ! -f "${VERSION_HOME}/bin/node" ];
                 then
                     echo "Node doesn't seem to be installed at ${VERSION_HOME}.";
                     nman-install ${VERSION} ${GLOBAL};
