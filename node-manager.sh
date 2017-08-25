@@ -159,7 +159,8 @@ function nman-switch {
 function nman-installed {
 
   VERSIONS=`ls "${NMAN_HOME}/node" | awk '{ print $1 }'`
-  ACTIVE=`cat "${NMAN_HOME}/active.txt"`
+  ACTIVE=`ls -al ${NMAN_HOME}/active | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+'`
+
   for i in ${VERSIONS[@]}; do
     if [ $i == $ACTIVE ];
       then echo "${i} (active)";
