@@ -171,8 +171,14 @@ function nman-installed {
 
 function nman-switch-active {
 
-    ACTIVE=`cat "${NMAN_HOME}/active.txt"`
-    nman-switch ${ACTIVE}
+  ACTIVE=`ls -al ${NMAN_HOME}/active | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+'`
+  nman-switch ${ACTIVE}
+}
+
+function nman-active {
+
+  ACTIVE=`ls -al ${NMAN_HOME}/active | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+'`
+  echo ${ACTIVE}
 }
 
 function nman-remove {
