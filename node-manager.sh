@@ -139,7 +139,12 @@ function nman-switch {
               VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
               echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
               if [ -d "${VERSION_HOME}" ];
-                  then export PATH="${VERSION_HOME}/bin:$PATH";
+                  then
+                    echo "Remove old symlink at ${NMAN_HOME}/active"
+                    rm ${NMAN_HOME}/active
+                    echo "Adding active symlink to ${VERSION_HOME}"
+                    ln -s ${VERSION_HOME} ${NMAN_HOME}/active
+                    export PATH="${NMAN_HOME}/active/bin:$PATH";
               else
                   echo "Version ${VERSION} doesn't seem to be installed.";
                   nman-install ${VERSION} ${GLOBAL};
