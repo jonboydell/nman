@@ -104,6 +104,13 @@ function __nman-setup {
     then mkdir ${NMAN_HOME};
   fi
 
+  if [ ! -d "${NMAN_HOME}/bin" ];
+    then 
+      mkdir ${NMAN_HOME}/bin;
+      cp node-manager.sh ${NMAN_HOME}/bin;
+      echo source ${NMAN_HOME}/bin/node-manager.sh >> ~/.profile;
+  fi  
+
   if [ ! -d "${NMAN_HOME}/node" ];
     then mkdir ${NMAN_HOME}/node;
   fi
@@ -118,42 +125,23 @@ function nman-switch {
   __nman-setup;
 
   VERSION=${1}
-  GLOBAL=false;
-
-  if [ -n "${2}" ];
-  then
-    echo "Will install globally";
-    VERSION=${2};
-    GLOBAL=true;
-  fi;
-
-    if [[ ${VERSION} == v* ]]; then
-        if [ "${GLOBAL}" = true  ]; then
-            VERSION_HOME="/usr/local";
-            if [ ! -f "${VERSION_HOME}/bin/node" ]; then
-                echo "Node doesn't seem to be installed at ${VERSION_HOME}.";
-                nman-install ${VERSION} ${GLOBAL};
-            fi;
-
-          else
-              VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
-              echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
-              if [ -d "${VERSION_HOME}" ];
-                  then
-                    echo "Remove old symlink at ${NMAN_HOME}/active"
-                    rm ${NMAN_HOME}/active
-                    echo "Adding active symlink to ${VERSION_HOME}"
-                    ln -s ${VERSION_HOME} ${NMAN_HOME}/active
-                    export PATH="${NMAN_HOME}/active/bin:$PATH";
-              else
-                  echo "Version ${VERSION} doesn't seem to be installed.";
-                  nman-install ${VERSION} ${GLOBAL};
-              fi
-          fi
-          echo ${VERSION} > ${NMAN_HOME}/active.txt;
-    else
-        echo "Usage nman-switch vX.Y.Z";
-    fi
+  if [[ ${VERSION} == v* ]]; then
+      VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
+      echo "Switching to NodeJS version ${VERSION} at ${VERSION_HOME}."
+      if [ -d "${VERSION_HOME}" ];
+        then
+          echo "Remove old symlink at ${NMAN_HOME}/active"
+          rm ${NMAN_HOME}/active
+          echo "Adding active symlink to ${VERSION_HOME}"
+          ln -s ${VERSION_HOME} ${NMAN_HOME}/active
+      else
+        echo "Version ${VERSION} doesn't seem to be installed.";
+        nman-install ${VERSION}
+      fi
+      echo ${VERSION} > ${NMAN_HOME}/active.txt;
+  else
+      echo "Usage nman-switch vX.Y.Z";
+  fi
 }
 
 function nman-installed {
@@ -241,19 +229,21 @@ function nman-install {
   __nman-checkDependencies;
 
   VERSION=${1}
-  GLOBAL=${2}
   VERSION_SRC="${NMAN_HOME}/src"
   VERSION_HOME="${NMAN_HOME}/node/${VERSION}"
 
-  if [ ${GLOBAL} == true ];
-    then
-        VERSION_HOME="/usr/local";
-  fi;
-
   if [ "yes" == ${CAN_CONTINUE} ];
     then
-      __nman-downloadAndUntar ${VERSION} ${VERSION_SRC};
-      __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME} ${GLOBAL};
-      nman-switch ${VERSION} ${GLOBAL};
+      __nman-downloadAndUntar ${VERSION} ${VERSION_SRC}
+      __nman-build "${VERSION_SRC}/node-${VERSION}" ${VERSION_HOME}
+      echo "Remove old symlink at ${NMAN_HOME}/active"
+      rm ${NMAN_HOME}/active
+      echo "Adding active symlink to ${VERSION_HOME}"
+      ln -s ${VERSION_HOME} ${NMAN_HOME}/active
+      if [ -z `echo $PATH | grep active` ];
+      then
+        export PATH=${NMAN_HOME}/active/bin:$PATH
+        echo PATH=${NMAN_HOME}/active/bin:$PATH >> ~/.profile
+      fi;
   fi;
 }
